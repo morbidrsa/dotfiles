@@ -210,3 +210,5 @@ vi style of % jumping to matching brace."
 
       epg-debug t ;;  then read the *epg-debug*" buffer
       )
+(when (not (display-graphic-p))
+  (setq epg-gpg-program "/usr/bin/gpg1"))
