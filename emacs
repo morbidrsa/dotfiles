@@ -26,9 +26,15 @@
     (server-start))
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(load-theme 'solarized-dark t)
+;(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+;; (load-theme 'solarized-dark t)
 
+(autoload 'gtags-mode "gtags" "" t)
+(add-hook 'gtags-mode-hook
+	  (lambda()
+	    (local-set-key (kbd "M-.") 'gtags-find-tag)
+	    (local-set-key (kbd "M-*") 'gtags-pop-stack)
+	    (local-set-key (kbd "M-,") 'gtags-find-rtag)))
 ; ido-mode
 (ido-mode)
 (ido-everywhere 1)
@@ -36,9 +42,9 @@
 ;; For git commit messages
 (add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . diff-mode))
 
-(hl-line-mode)
 
 (setq vc-handled-backends nil)
+(setq inhibit-startup-message t)
 
 ;; Linux kernel C Mode as from src/linux/Documentation/CodingStyle Chap 9.
 (defun c-lineup-arglist-tabs-only (ignored)
@@ -96,6 +102,10 @@
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 (add-hook 'c-mode-hook
+	  (lambda ()
+	    (gtags-mode t)))
+
+(add-hook 'c-mode-hook
 	  '(lambda ()
 	     (setq indent-tabs-mode t)
 	     (c-set-style "linux-tabs-only")))
@@ -110,8 +120,8 @@
 (eval-after-load 'diff-mode
  '(progn
     (set-face-foreground 'diff-added "green4")
-    (set-face-background 'diff-added "black")
-    (set-face-background 'diff-removed "black")
+;    (set-face-background 'diff-added "black")
+;    (set-face-background 'diff-removed "black")
     (set-face-foreground 'diff-removed "red3")))
 
 
@@ -149,9 +159,6 @@ vi style of % jumping to matching brace."
 	((looking-at "\\s\)") (forward-char 1) (backward-list 1))
 	(t (self-insert-command (or arg 1)))))
 
-(require 'c-refactor)
-(require 'xcscope)
-
 (load "~/.emacs.d/site-lisp/cocci.el")
 (setq auto-mode-alist
       (cons '("\\.cocci$" . cocci-mode) auto-mode-alist))
@@ -173,14 +180,6 @@ vi style of % jumping to matching brace."
 (setq org-caldav-url "https://www.google.com/calendar/dav")
 (setq org-caldav-calendar-id "morbidrsa@gmail.com")
 (setq org-caldav-files "~/org/appointments.org")
-(custom-set-variables
- '(custom-enabled-themes (quote (solarized-dark)))
- '(custom-safe-themes
-   (quote
-    ("1297a022df4228b81bc0436230f211bad168a117282c20ddcba2db8c6a200743" default)))
- '(frame-background-mode (quote dark))
- '(inhibit-startup-screen t))
-(custom-set-faces)
 
 (require 'epg-config)
 (setq mml2015-use 'epg
