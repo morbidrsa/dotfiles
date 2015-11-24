@@ -1,0 +1,19 @@
+# no visual bell
+vbell off
+zombie cr
+bind B break 3
+ignorecase on
+startup_message off
+shell -/bin/bash
+defscrollback 1000
+#hardstatus alwaysignore
+#shelltitle lX
+
+# keys
+bind j select
+
+# set caption to [HOST] i TITEL ... TIME DATE
+#caption always '[ %H ] %{-b}%{= wb}%-Lw%{= wr}%50>%{+b}%n%f %t%{= wb}%{-b}%+Lw%{= wr}%-017= %c %Y-%m-%d'
+
+hardstatus alwayslastline
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %m-%d %{W}%c %{g}]'
