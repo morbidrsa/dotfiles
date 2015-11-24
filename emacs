@@ -18,23 +18,23 @@
 ;; Show linue numbers
 (global-linum-mode 1)
 
+(add-to-list 'load-path "~/.emacs.d/site-lisp")
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+(set-face-foreground 'font-lock-comment-face "deep sky blue")
+(set-face-foreground 'font-lock-negation-char-face "brightred")
+(set-face-foreground 'font-lock-string-face "red")
+(set-face-foreground 'font-lock-doc-face "cyan")
+
 ;; Get rid of the toolbar
 (if window-system
-    (tool-bar-mode -1))
+    (progn
+      (require 'powerline)
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1)
+      (load-theme 'spolsky t)
+      (server-start))
+  (set-face-foreground 'minibuffer-prompt "deep sky blue"))
 
-(if window-system
-    (server-start))
-
-(add-to-list 'load-path "~/.emacs.d/site-lisp")
-;(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-;; (load-theme 'solarized-dark t)
-
-(autoload 'gtags-mode "gtags" "" t)
-(add-hook 'gtags-mode-hook
-	  (lambda()
-	    (local-set-key (kbd "M-.") 'gtags-find-tag)
-	    (local-set-key (kbd "M-*") 'gtags-pop-stack)
-	    (local-set-key (kbd "M-,") 'gtags-find-rtag)))
 ; ido-mode
 (ido-mode)
 (ido-everywhere 1)
@@ -45,6 +45,10 @@
 
 (setq vc-handled-backends nil)
 (setq inhibit-startup-message t)
+
+(add-hook 'prog-mode-hook
+	  ; Show trailing whitespace
+	  (setq-default show-trailing-whitespace t))
 
 ;; Linux kernel C Mode as from src/linux/Documentation/CodingStyle Chap 9.
 (defun c-lineup-arglist-tabs-only (ignored)
@@ -70,6 +74,8 @@
                (lambda ()
                 (font-lock-add-keywords nil
                  '(("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t)))))
+
+(setq c-default-style "linux-tabs-only")
 
 (defun my-c-mode-font-lock-if0 (limit)
   (save-restriction
@@ -110,20 +116,18 @@
 	     (setq indent-tabs-mode t)
 	     (c-set-style "linux-tabs-only")))
 
-; Delete trailing whitespace on save
-;(add-hook 'before-save-hook 'delete-trailing-whitespace)
-; Show trailing whitespace
-(setq-default show-trailing-whitespace t)
 
 ; For diff
 (setq diff-switches "-u")
 (eval-after-load 'diff-mode
- '(progn
-    (set-face-foreground 'diff-added "green4")
-;    (set-face-background 'diff-added "black")
-;    (set-face-background 'diff-removed "black")
-    (set-face-foreground 'diff-removed "red3")))
-
+  '(progn
+     (set-face-foreground 'diff-added "medium spring green")
+     (set-face-background 'diff-added nil)
+     (set-face-foreground 'diff-removed "red")
+     (set-face-background 'diff-removed nil)
+     (set-face-foreground 'diff-header "yellow")
+     (set-face-background 'diff-header nil)
+     (set-face-background 'diff-file-header nil)))
 
 ; Org mode keybindings
 (require 'org-install)
@@ -141,23 +145,26 @@
 (setq remember-handler-functions '(org-remember-handler))
 
 ;; Org agend
-(setq org-agenda-files (list "~/org/appointments.org"))
+(setq org-agenda-files (list "~/org/appointments.org"
+			     "~/org/gtd.org"
+			     "~/org/calendar.org"
+			     ))
 
 ; Line filling
-(setq-default fill-column 80)
+(setq-default fill-column 79)
 
 ; Default tab width is 8
 (setq default-tab-width 8)
 
 ;; Emulate vi '%' command
-(global-set-key (kbd "C-%") 'match-paren)
-(defun match-paren (arg)
-  "Go to the matching parenthesis if on parenthesis, otherwise insert %.
-vi style of % jumping to matching brace."
-  (interactive "p")
-  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-	((looking-at "\\s\)") (forward-char 1) (backward-list 1))
-	(t (self-insert-command (or arg 1)))))
+;;(global-set-key (kbd "C-%") 'match-paren)
+;;(defun match-paren (arg)
+;;  "Go to the matching parenthesis if on parenthesis, otherwise insert %.
+;;vi style of % jumping to matching brace."
+;;  (interactive "p")
+;;  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+;;	((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+;;	(t (self-insert-command (or arg 1)))))
 
 (load "~/.emacs.d/site-lisp/cocci.el")
 (setq auto-mode-alist
@@ -171,43 +178,72 @@ vi style of % jumping to matching brace."
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
-(require 'srefactor)
-(semantic-mode 1)
-(define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
-(define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
 
-(require 'org-caldav)
-(setq org-caldav-url "https://www.google.com/calendar/dav")
-(setq org-caldav-calendar-id "morbidrsa@gmail.com")
-(setq org-caldav-files "~/org/appointments.org")
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(delete-selection-mode nil)
+ '(send-mail-function (quote smtpmail-send-it))
+ '(smtpmail-smtp-server "imap.suse.de")
+ '(smtpmail-smtp-service 25))
 
-(require 'epg-config)
-(setq mml2015-use 'epg
+(defun insert-sob()
+  "Insert Signed-off-by line"
+  (interactive)
+  (insert "Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>"))
 
-      mml2015-verbose t
-      epg-user-id "4B1107EF"  ;;gpgpgpkeyID
-      mml2015-encrypt-to-self t
-      mml2015-always-trust nil
-      mml2015-cache-passphrase t
-      mml2015-passphrase-cache-expiry '36000
-      mml2015-sign-with-sender t
+(defun insert-revb()
+  "Insert Reviewed-by line"
+  (interactive)
+  (insert "Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>"))
 
-      gnus-message-replyencrypt t
-      gnus-message-replysign t
-      gnus-message-replysignencrypted t
-      gnus-treat-x-pgp-sig t
+(defun insert-ack()
+  "Insert Acked-by line"
+  (interactive)
+  (insert "Acked-by: Johannes Thumshirn <jthumshirn@suse.de>"))
 
-      ;;       mm-sign-option 'guided
-      ;;       mm-encrypt-option 'guided
-      mm-verify-option 'always
-      mm-decrypt-option 'always
+(defun insert-suse-tags()
+  "Insert SUSE kernel patch tags"
+  (interactive)
+  (insert "References:\nGit-Commit:\nPatch-Mainline:"))
 
-      gnus-buttonized-mime-types
-      '("multipart/alternative"
-	"multipart/encrypted"
-	"multipart/signed")
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
-      epg-debug t ;;  then read the *epg-debug*" buffer
-      )
-(when (not (display-graphic-p))
-  (setq epg-gpg-program "/usr/bin/gpg1"))
+
+(defun move-line-up ()
+  "Move up the current line."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2)
+  (indent-according-to-mode))
+
+(defun move-line-down ()
+  "Move down the current line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+(global-set-key [(control shift up)] 'move-line-up)
+(global-set-key [(control shift down)] 'move-line-down)
+
+
+(setq bbdb-file "~/.emacs.d/bbdb")
+(require 'message)
+(require 'bbdb)
+(require 'bbdb-gnus)
+(bbdb-initialize)
+(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+
+(setq require-final-newline t)
+
+(require 'evil)
+(evil-mode t)
