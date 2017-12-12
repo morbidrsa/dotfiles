@@ -20,6 +20,9 @@ set splitbelow
 set splitright
 set background=dark
 set laststatus=2
+set number
+
+highlight LineNr ctermfg=grey
 
 let mapleader=","
 
@@ -62,7 +65,6 @@ au BufNewFile,BufRead *.sls set filetype=yaml
 
 filetype plugin indent on
 let g:linuxsty_patterns = [ "/linux/", "/kernel/" ]
-
 
 python from powerline.vim import setup as powerline_setup
 python powerline_setup()
