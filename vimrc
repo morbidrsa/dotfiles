@@ -20,6 +20,7 @@
 
 filetype plugin indent on
 syntax enable
+set nocompatible
 set smartindent
 set autoindent
 set tabstop=8
@@ -41,21 +42,21 @@ set title
 set exrc
 set splitbelow
 set splitright
-set background=light
+set background=dark
 set laststatus=2
 set t_Co=256
 set wildmenu
 
-highlight LineNr ctermfg=grey
-highlight Comment ctermfg=darkcyan
-highlight String ctermfg=darkmagenta
-highlight Include ctermfg=red
-highlight cIncluded ctermfg=blue
-highlight cPreCondit ctermfg=blue
-highlight Macro ctermfg=grey
-highlight StorageClass ctermfg=red
-highlight Structure ctermfg=red
-highlight Type ctermfg=red
+"highlight LineNr ctermfg=grey
+"highlight Comment ctermfg=darkcyan
+"highlight String ctermfg=darkmagenta
+"highlight Include ctermfg=red
+"highlight cIncluded ctermfg=blue
+"highlight cPreCondit ctermfg=blue
+"highlight Macro ctermfg=grey
+"highlight StorageClass ctermfg=red
+"highlight Structure ctermfg=red
+"highlight Type ctermfg=red
 
 
 let mapleader=","
@@ -81,6 +82,7 @@ endfunc
 map <Leader>ts :call InsertTimestamp()<CR>
 map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <A-]> :vsplit <CR>:exec("tag ".expand("<cword>"))<CR>
+map <F2> :NERDTreeToggle<CR>
 
 au BufNewFile,BufRead *.txt setlocal spell
 au BufNewFile,BufRead COMMIT_EDITMSG setlocal spell
@@ -88,14 +90,15 @@ au BufNewFile,BufRead *.md setlocal spell
 au BufNewFile,BufRead *.md set filetype=markdown
 au BufNewFile,BufRead *.sls set filetype=yaml
 au BufNewFile,BufRead *.go set filetype=go
-au FileType gitcommit set tw=75
+au FileType gitcommit set tw=74
 
 filetype plugin indent on
 let g:linuxsty_patterns = [ "/linux/", "/kernel/", "/btrfs-progs/" ]
 
 
 if has("gui_running")
-	set background=light
+	set background=dark
+"	colorscheme=industry
 	set guioptions-=T
-	map <F2> :NERDTreeToggle<CR>
+	set relativenumber
 endif
