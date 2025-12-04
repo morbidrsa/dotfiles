@@ -38,3 +38,12 @@ vim.opt.splitright = true
 vim.opt.spell = true
 vim.opt.wrap = false
 vim.opt.clipboard = "unnamedplus"
+
+-- Auto-commands
+vim.api.nvim_create_autocmd({ "TermOpen" }, {
+	pattern = "*",
+	callback = function()
+		vim.cmd("startinsert")
+	end,
+	desc = "Enter insert mode when entering terminal buffer window",
+})
