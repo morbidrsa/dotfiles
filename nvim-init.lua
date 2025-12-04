@@ -37,3 +37,4 @@ vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.spell = true
 vim.opt.wrap = false
+vim.opt.clipboard = "unnamedplus"
