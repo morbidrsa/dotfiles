@@ -47,3 +47,15 @@ vim.api.nvim_create_autocmd({ "TermOpen" }, {
 	end,
 	desc = "Enter insert mode when entering terminal buffer window",
 })
+
+-- LSPs
+vim.lsp.config("clangd", {
+	cmd = { "clangd", "--background-index" },
+	filetypes = { 'c', 'cpp' }
+})
+vim.lsp.enable("clangd")
+vim.lsp.config('rust_analyzer', {
+	cmd = { 'rust-analyzer' },
+	filetypes = { 'rust' }
+})
+vim.lsp.enable("rust_analyzer")
