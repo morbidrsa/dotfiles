@@ -60,3 +60,9 @@ vim.lsp.config('rust_analyzer', {
 	filetypes = { 'rust' }
 })
 vim.lsp.enable("rust_analyzer")
+vim.lsp.config("pylsp", {
+	cmd = { 'pylsp' },
+	filetypes = { 'python' }
+})
+vim.lsp.enable("pylsp")
+
