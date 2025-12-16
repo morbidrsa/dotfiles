@@ -22,6 +22,7 @@
 vim.opt.background = 'dark'
 vim.cmd.colorscheme("habamax")
 vim.opt.termguicolors = true
+vim.opt.signcolumn = "yes:1"
 
 -- Coding
 vim.opt.tabstop = 8
