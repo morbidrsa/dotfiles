@@ -37,9 +37,10 @@ vim.opt.hlsearch = true
 vim.opt.mouse = "a"
 vim.opt.splitbelow = true
 vim.opt.splitright = true
+vim.opt.spelllang = 'en_us'
 vim.opt.spell = true
 vim.opt.wrap = false
-vim.opt.clipboard = "unnamedplus"
+--vim.opt.clipboard = "unnamedplus"
 
 -- netrw
 vim.g.netrw_banner = 0
@@ -70,9 +71,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
         vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
         vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
+	vim.bo[args.buf].formatexpr = "v:lua.vim.lsp.formatexpr()"
     end
 })
-
 
 -- LSPs
 vim.lsp.config("clangd", {
